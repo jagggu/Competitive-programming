@@ -62,53 +62,45 @@ Explanation 2:
  * };
  */
 
-class TreeInfo {
-public:
-	int maxEle;
-	int minEle;
-	bool isBST;
-	int size;
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+struct Node {
+  bool isBST;
+  int minVal;
+  int maxVal;
+  int size;
 };
 
-TreeInfo solveHelper(TreeNode *root, int &ans) {
-	if(root == NULL) {
-		TreeInfo tmp;
-		tmp.maxEle = INT_MIN;
-		tmp.minEle = INT_MAX;
-		tmp.isBST = true;
-		tmp.size = 0;
-		return tmp;
-	}
+Node solveHelper(TreeNode *root, int &maxSize) {
 
-	TreeInfo leftAns = solveHelper(root->left,ans);
-	TreeInfo rightAns = solveHelper(root->right,ans);
-	if(leftAns.maxEle<root->val && rightAns.minEle>root->val && leftAns.isBST && rightAns.isBST) {
-		TreeInfo tmp;
-		tmp.maxEle = max(root->val,rightAns.maxEle);
-		tmp.minEle = min(root->val,leftAns.minEle);
-		tmp.isBST = true;
-		tmp.size = leftAns.size + rightAns.size+1;
-		ans = max(ans,tmp.size);
-		return tmp;
-	}
+      if(root == NULL) {
+        return {true,INT_MAX,INT_MIN,0};
+      }
 
-	TreeInfo tmp;
-	tmp.maxEle = max(root->val,rightAns.maxEle);
-	tmp.minEle = min(root->val,leftAns.minEle);
-	tmp.isBST = false;
-	tmp.size = leftAns.size + rightAns.size+1;
-	//tmp.size = 0;
-	
-	return tmp;
+      Node left = solveHelper(root->left,maxSize);
+      Node right = solveHelper(root->right,maxSize);
+
+      if(left.maxVal < root->val && root->val < right.minVal && left.isBST && right.isBST) {
+          maxSize = max(maxSize,left.size+right.size+1);
+         // cout<<"Root: "<<root->val<<' '<<"leftSize: "<<left.size<<' '<<" RightSize: "<<right.size<<endl;
+        return {true,min(root->val,left.minVal),max(root->val,right.maxVal),left.size+right.size+1};
+      } else {
+        return {false,-1,-1,0};
+      }
 
 }
 
 int Solution::solve(TreeNode* A) {
 
-int ans = 0;
-
-	TreeInfo res = solveHelper(A,ans);
-
-	return ans;
-
+int maxSize = 0;
+  Node ans = solveHelper(A, maxSize);
+  return maxSize;
 }

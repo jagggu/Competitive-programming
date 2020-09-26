@@ -26,40 +26,46 @@ Also think about a version of the question where you are asked to do a level ord
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
 vector<vector<int> > Solution::levelOrder(TreeNode* A) {
-	int DELIMITER = -1;
-	queue<TreeNode*> q;
-	vector<vector<int> > res;
-	vector<int> tmp;
-	if(A == NULL) {
-		return res;
-	}
-	q.push(A);
-	q.push(NULL);
 
-	while(!q.empty()) {
-		TreeNode *top = q.front();
-		q.pop();
-		if(top == NULL) {
-			res.push_back(tmp);
-			tmp.clear();
-			if(!q.empty()) { 
-				q.push(NULL);
-			}	
-			continue;
-		}
+      queue<TreeNode*> q;
+      vector<vector<int> > ans;
+      if(A == NULL) {
+        return ans;
+      }
 
-		tmp.push_back(top->val);
-		if(top->left) {
-			q.push(top->left);
-		} 
+      q.push(A);
 
-		if(top->right) {
-			q.push(top->right);
-		}
+      vector<int> tmp;
 
-	}
+      while(!q.empty()) {
 
-	return res;
+          int size = q.size();
+          tmp.clear();
 
+          for(int i = 0;i<size;i++) {
+            TreeNode *currNode = q.front();
+            q.pop();
+            tmp.push_back(currNode->val);
+            if(currNode->left) {
+              q.push(currNode->left);
+            }
+            if(currNode->right) {
+              q.push(currNode->right);
+            }
+          }
+
+          ans.push_back(tmp);
+      }
+
+      return ans;
 }

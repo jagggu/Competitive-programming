@@ -39,6 +39,8 @@ Output 2:
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+/*
 vector<int> Solution::solve(TreeNode* A) {
 	queue<pair<TreeNode*, int> > q;
 	vector<int> res;
@@ -78,6 +80,59 @@ vector<int> Solution::solve(TreeNode* A) {
 	}
 	for(int i = 1;i<=maxEle;i++) {
 		res.push_back(m[i]);
+	}
+	return res;
+}
+
+*/
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+void solveHelper(TreeNode *root, int &minEle, int &maxEle, unordered_map<int,pair<int,int> > &m, int currIndex, int currLevel) {
+
+  if(root == NULL) {
+    return;
+  }
+
+  if(m.find(currIndex) == m.end()) {
+    m[currIndex] = make_pair(root->val,currLevel);
+     minEle = min(minEle,currIndex);
+    maxEle = max(maxEle, currIndex);
+  } else {
+    if(currLevel < m[currIndex].second) {
+      m[currIndex] = make_pair(root->val,currLevel);
+    }
+  }
+ 
+  solveHelper(root->left,minEle,maxEle,m,currIndex-1, currLevel+1);
+  solveHelper(root->right,minEle,maxEle,m,currIndex+1, currLevel+1);
+
+}
+
+vector<int> Solution::solve(TreeNode* A) {
+  //first --> value
+  //second --> level
+  unordered_map<int,pair<int,int> > m;
+  int minEle = INT_MAX;
+  int maxEle = INT_MIN;
+
+  solveHelper(A,minEle,maxEle,m,0,0);
+  vector<int> res;
+
+ res.push_back(m[0].first);
+	for(int i = -1;i>=minEle;i--) {
+		res.push_back(m[i].first);
+	}
+	for(int i = 1;i<=maxEle;i++) {
+		res.push_back(m[i].first);
 	}
 	return res;
 }

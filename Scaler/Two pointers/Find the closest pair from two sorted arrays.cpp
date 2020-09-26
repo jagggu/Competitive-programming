@@ -35,51 +35,45 @@ Output 2:
 
 vector<int> Solution::solve(vector<int> &A, vector<int> &B, int C) {
 
-	int Alen = A.size();
-	int Blen = B.size();
+  int ansStart = 100001;
+  int ansEnd = 100001;
 
-	int start = 0;
-	int end = Blen-1;
+  int ALen = A.size();
+  int BLen = B.size();
 
-	ll diff = INT_MAX;
-	int resL,resR;
+  int start = 0;
+  int end  = BLen-1;
+  ll ans = INT_MAX;
 
-	while(start<Alen && end>=0) {
-		ll tmp = A[start] + B[end] - C;
-            //cout<<diff<<endl;
-            //cout<<start<<' '<<end<<endl;
-		if(abs(tmp) < diff) {
-			diff = abs(tmp);
-			resL = start;
-			resR = end;
-		//	cout<<resL<<' '<<resR<<endl;
-		} else if(abs(tmp) == diff) {
-          //  cout<<"Reached";
-			//Finding min resL and resR
-			if(start < resL) {
-				resL = start; 
-				resR = end;
-				diff = abs(tmp);
-			} else if(start == resL) {
-				if(end < resR) {
-					resR = end;
-					resL = start;
-					diff = abs(tmp);
-				}
-			}
-		}
+  while(start < ALen && end >=0) {
 
-		tmp = A[start] + B[end];
-	//	cout<<start<<' '<<end<<' '<<A[start]+A[end]<<' '<<tmp<<endl;
-		if(tmp > C) {
-			end--;
-		} else {
-			start++;
-		}
-	}
+      ll tmp = abs(A[start] + B[end] - C);
 
-	vector<int> res;
-	res.push_back(A[resL]);
-	res.push_back(B[resR]);
-	return res;
+      if(tmp < ans) {
+        ansStart = start;
+        ansEnd = end;
+        
+        ans = tmp;
+        
+      } else if(tmp == ans) {
+          if(ansStart == start) {
+              ansEnd = end;
+          }
+      }
+      
+      ll sum = A[start] + B[end];
+
+      if(sum > C) {
+        end--;
+      } else {
+        start++;
+      }
+
+  }
+
+  vector<int> res;
+  res.push_back(A[ansStart]);
+  res.push_back(B[ansEnd]);
+  return res;
+
 }

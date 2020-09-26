@@ -33,61 +33,51 @@ Note that the left child of all nodes should be NULL.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-struct LL {
+
+struct Node {
 	TreeNode *head;
 	TreeNode *tail;
 };
 
-LL flattenHelper(TreeNode *root) { 
+Node flattenHelper(TreeNode *root) {
 	if(root == NULL) {
-		LL tmp;
-		tmp.head = NULL;
-		tmp.tail = NULL;
-		return tmp;
+		return {NULL,NULL};
 	}
-	LL leftAns = flattenHelper(root->left);
-	LL rightAns = flattenHelper(root->right);
+
+	Node leftAns = flattenHelper(root->left);
+	Node rightAns = flattenHelper(root->right);
+
 	if(leftAns.head == NULL) {
-	    root->right = rightAns.head;
-	    LL tmp;
-	    tmp.head = root;
-	    if(rightAns.tail) { 
-	    tmp.tail = rightAns.tail;
-	    } else {
-	        tmp.tail = rightAns.head;   // Tail should refer to some address instead of NULL
-	    }
-	    root->left = NULL;
-	    return tmp;
+		root->right = rightAns.head;
+		root->left = NULL;
+		if(rightAns.tail) {
+			return {root,rightAns.tail};
+		} else {
+			return {root,rightAns.head};
+		}
 	} else if(rightAns.head == NULL) {
-	       root->right = leftAns.head;
-	       root->left = NULL;
-	       LL tmp;
-	       tmp.head = root;
-	       if(leftAns.tail != NULL) {
-	           tmp.tail = leftAns.tail;
-	       } else {
-	           tmp.tail = leftAns.head;
-	       }
-	       return tmp;
-	} 
-	else {
-	 //cout<<root->val<<' '<<leftAns.head<<' '<<leftAns.tail<<endl;
-	root->right = leftAns.head;
-	if(leftAns.tail != NULL) { 
-	leftAns.tail->right = rightAns.head;
+		root->right = leftAns.head;
+		root->left = NULL;
+		if(leftAns.tail) {
+			return {root,leftAns.tail};
+		} else {
+			return {root,leftAns.head};
+		}
 	} else {
-	    leftAns.head->right = rightAns.head;
+		root->right = leftAns.head;
+		root->left = NULL;
+		if(leftAns.tail) {
+			leftAns.tail->right = rightAns.head;
+		} else {
+			leftAns.head->right = rightAns.head;
+		}
+		if(rightAns.tail) {
+			return {root,rightAns.tail};
+		} else {
+			return {root,rightAns.head};
+		}
 	}
-	root->left = NULL;
-	LL tmp;
-	tmp.head = root;
-	if(rightAns.tail) {
-	    tmp.tail = rightAns.tail;
-	} else {
-	    tmp.tail = rightAns.head;
-	}
-	return tmp;
-	}
+
 }
 
 TreeNode* Solution::flatten(TreeNode* A) {
@@ -96,8 +86,6 @@ TreeNode* Solution::flatten(TreeNode* A) {
     // Do not print the output, instead return values as specified
     // Still have a doubt. Checkout www.interviewbit.com/pages/sample_codes/ for more details
 
-	LL res = flattenHelper(A);
-
-	return res.head;
-
+	Node ans = flattenHelper(A);
+	return ans.head;
 }

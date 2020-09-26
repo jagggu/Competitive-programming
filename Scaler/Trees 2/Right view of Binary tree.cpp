@@ -39,6 +39,8 @@ Output 2:
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+/*
 vector<int> Solution::solve(TreeNode* A) {
 	vector<int> res;
 	if(A == NULL) {
@@ -63,5 +65,46 @@ vector<int> Solution::solve(TreeNode* A) {
 		}
 	}
 	return res;
+
+}
+
+*/
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+void solveHelper(TreeNode *root, int currLevel, int &maxLevel, vector<int> &ans) {
+
+  if(root == NULL) {
+    return;
+  }
+
+  if(currLevel == maxLevel) {
+      ans.push_back(root->val);
+      maxLevel++;
+  }
+  solveHelper(root->right,currLevel+1,maxLevel,ans);
+  solveHelper(root->left,currLevel+1,maxLevel,ans);
+
+
+}
+
+vector<int> Solution::solve(TreeNode* A) {
+
+  vector<int> ans;
+  if(A == NULL) {
+    return ans;
+  }
+
+  int maxLevel = 0;
+  solveHelper(A,0,maxLevel,ans);
+  return ans;
 
 }

@@ -33,38 +33,28 @@ Subarrays of A that have unique elements only:
 
 
 #define ll long long int
-
+ll MOD = 1e9+7;
 
 int Solution::solve(vector<int> &A) {
 
-	set<int> s;
-	ll ans = 0;
-	ll mod = 1000000007;
-	int n = A.size();
-	 int j = 0;
-	 ll sameEles = 0;
-	for(int i = 0; i<n; i++) {
+  int start = 0;
+  int n = A.size();
 
-		if(s.find(A[i]) != s.end()) {
-			ll tmp = ((i-j)/2.0) * (i-j+1);
-			ans = (ans%mod + tmp%mod)%mod;
-			while(s.find(A[i]) != s.end()) {
-				s.erase(A[j]);
-				j++;
-			}
+  ll ans = 0;
+  unordered_set<int> s;
+  for(int end = 0;end<n; end++) {
 
-			tmp = ((i-j)/2.0) * (i-j+1);
-			ans = ans - tmp;
-			s.insert(A[i]);
-			
-		} else { 
-		s.insert(A[i]);
-		}
-	
-	}
+    while(start < n && s.find(A[end]) != s.end()) {
+      s.erase(A[start]);
+      start++;
+    }
+    
+    s.insert(A[end]);
 
-	ll tmp = n-j;
-	ll tmpAns = (tmp/2.0) *(tmp+1);
-	ans = (ans%mod + tmpAns%mod)%mod;
-	return ans;
+    ll currAns = ((end-start) + 1) % MOD;
+    ans = (ans%MOD + currAns%MOD) % MOD;
+
+  }
+
+  return ans;    
 }

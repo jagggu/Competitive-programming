@@ -20,56 +20,29 @@ EXPLANATION
 */
 
 
-bool isFound(vector<int> &A, int index) {
-    int val = A[index];
-    
-    bool greater = false, lesser = false;
-    for(int i = index+1;i<A.size();i++) {
-        if(A[i]>val) {
-            greater = true;
-        }
-        
-        if(A[i] < val) {
-            lesser = true;
-        }
-    }
-    
-    return greater && lesser;
-}
-
-bool solveHelper(vector<int> &A, int choice) {
-     
-    int n = A.size();
-    
-    /*
-	int n = A.size();
-	for(int i= 0;i<n-2;i++) {
-	    if(A[i]>A[i+1] && A[i]>A[i+2]) {
-	        continue;
-	    } else if(A[i]<A[i+1] && A[i]<A[i+2]) {
-	        continue;
-	    } else {
-	        return false;
-	    }
-	    
-	}
-	return true;
-	*/
-	
-	for(int i = 0;i<n;i++) {
-	    if(isFound(A,i)) {
-	        return false;
-	    }
-	}
-	return true;
-}
-
 string Solution::solve(vector<int> &A) {
 
-	if(solveHelper(A,1) || solveHelper(A,2) || solveHelper(A,3) || solveHelper(A,4)) {
-	    return "YES";
-	} else {
-	    return "NO";
-	}
+    int n = A.size();
 
+    if(n < 1) {
+      return "YES";
+    }
+    int root = A[0];
+    int left = INT_MIN;
+    int right = INT_MAX;
+
+    for(int i = 1;i<n;i++) {
+      if(A[i] > root) {
+        left = root;
+      } else if(A[i] < root) {
+        right = root;
+      }
+
+      if(A[i] < left || A[i] > right) {
+        return "NO";
+      }
+      root = A[i];
+    }
+
+    return "YES";
 }

@@ -8,7 +8,7 @@
  * };
  */
 
-class TreeInfo {\
+class TreeInfo {
 public:
 	bool isBST = false;
 	int maxEle;

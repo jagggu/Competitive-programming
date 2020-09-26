@@ -8,6 +8,7 @@
  * };
  */
 
+/*
 #define ll long long int
 
 void storeTheNodesOfA(TreeNode *root, unordered_set<int> &s) {
@@ -66,4 +67,68 @@ int Solution::solve(TreeNode* A, TreeNode* B) {
 
 	return sumOfNodesInB(B,s);
 
+}
+
+*/
+
+//Efficient Solution
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+#define ll long long int
+ll MOD  = 1e9+7;
+
+ll solveHelper(TreeNode *root1, TreeNode *root2) {
+
+    stack<TreeNode*> s1,s2;
+    ll sum = 0;
+
+    while(true) {
+
+        if(root1) {
+          s1.push(root1);
+          root1 = root1->left;
+        } else if(root2) {
+          s2.push(root2);
+          root2 = root2->left;
+        } else if(!s1.empty() && !s2.empty()) {
+
+            root1 = s1.top();
+            root2 = s2.top();
+
+            if(root1->val == root2->val) {
+              sum = (sum%MOD + root1->val%MOD) % MOD;
+
+              s1.pop();
+              s2.pop();
+
+              root1 = root1->right;
+              root2 = root2->right;
+            } else if(root1->val < root2->val) {
+              s1.pop();
+              root1 = root1->right;
+              root2 = NULL;
+            } else {
+              s2.pop();
+              root2 = root2->right;
+              root1 = NULL;
+            }
+        } else {
+          return sum%MOD;
+        }
+    }
+}
+
+int Solution::solve(TreeNode* A, TreeNode* B) {
+
+      int sum = solveHelper(A,B);
+      return sum;
 }
